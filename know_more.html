@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>PHISHSHIELD – Know More</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #070b14;
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --accent: #22d3ee;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 6rem 2rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            margin-top: 2rem;
+            margin-bottom: 0.6rem;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .section-label {
+            margin-left: 1.4rem;
+            color: var(--text-main);
+            font-weight: 500;
+            margin-top: 1.4rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .section-block {
+            margin-left: 1.4rem;
+            /* moves the blue line */
+            border-left: 3px solid var(--accent);
+            padding-left: 1.2rem;
+            /* space between line and text */
+            margin-bottom: 1.2rem;
+        }
+
+
+        .accordion {
+            margin-top: 2rem;
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .accordion-header {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 1.2rem 0;
+            color: var(--text-main);
+            font-size: 1.05rem;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-header span {
+            font-size: 1.4rem;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            opacity: 0;
+            transition: grid-template-rows 0.35s ease, opacity 0.25s ease;
+        }
+
+        .accordion-content>div {
+            overflow: hidden;
+        }
+
+        .accordion-item.active .accordion-content {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+
+        .accordion-item.active .accordion-header span {
+            transform: rotate(45deg);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 3rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>About PHISHSHIELD</h1>
+
+        <p>
+            PHISHSHIELD is a phishing website detection system designed to help users avoid
+            fake and harmful websites that attempt to steal sensitive information.
+        </p>
+
+        <p>
+            Phishing websites often imitate legitimate platforms to capture passwords,
+            banking credentials, and personal data by exploiting user trust.
+        </p>
+
+        <p>
+            Small changes in URLs frequently go unnoticed, which makes manual detection
+            unreliable. This system identifies such threats before user interaction occurs.
+        </p>
+
+        <h3>There are three main files</h3>
+
+        <div class="accordion">
+
+            <!-- FILE 1 -->
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    Model Training File
+                    <span>+</span>
+                </button>
+
+                <div class="accordion-content">
+                    <div>
+
+                        <h3> Model Training File (Phishingproject.ipynb)</h3>
+
+                        <p>
+                            This notebook is responsible for training and testing the phishing
+                            detection model by handling data loading, analysis, model training,
+                            and evaluation.
+                        </p>
+
+                        <h4>Imported Libraries and Their Purpose</h4>
+
+                        <p class="section-label">NumPy</p>
+                        <div class="section-block">
+                            <p>
+                                NumPy handles numerical data efficiently by storing feature values
+                                in arrays. Since machine learning models operate on numerical
+                                inputs, NumPy enables fast and reliable mathematical operations.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Pandas</p>
+                        <div class="section-block">
+                            <p>
+                                Pandas is used for data handling and preprocessing by loading CSV
+                                files into structured tables, cleaning data, and selecting
+                                relevant features for analysis.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Warnings</p>
+                        <div class="section-block">
+                            <p>
+                                Warnings may appear during model training but do not affect the
+                                results. These warnings are suppressed to keep the notebook output
+                                clean and readable.
+                            </p>
+                        </div>
+
+                        <h4>Train-Test Split</h4>
+                        <div class="section-block">
+                            <p>
+                                The dataset is divided into training and testing sets to prevent
+                                memorization. 80% of the data is used for training,
+                                while 20% is reserved for testing unseen URLs.
+                            </p>
+                        </div>
+
+                        <h4>Model Selection</h4>
+
+                        <p class="section-label">Why Gradient Boosting Was Chosen</p>
+                        <div class="section-block">
+                            <p>
+                                Phishing patterns are complex and non-linear, making simple
+                                rule-based approaches ineffective. Gradient Boosting combines
+                                multiple decision trees where each tree corrects previous errors,
+                                producing a strong and adaptive model.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Decision Tree</p>
+                        <div class="section-block">
+                            <p>
+                                A single decision tree tends to overfit by memorizing training
+                                data, resulting in poor performance on new URLs and unreliable
+                                predictions.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Random Forest</p>
+                        <div class="section-block">
+                            <p>
+                                Random Forest relies on many independent trees, increasing memory
+                                usage and training time while lacking the corrective learning
+                                behavior of boosting methods.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Logistic Regression</p>
+                        <div class="section-block">
+                            <p>
+                                Logistic Regression assumes linear relationships between features,
+                                which does not match the deceptive and complex nature of phishing
+                                URLs.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Why Gradient Boosting Fits Best</p>
+                        <div class="section-block">
+                            <p>
+                                Gradient Boosting learns incrementally, handles non-linear
+                                patterns well, delivers strong results with fewer trees, and
+                                balances accuracy with computational efficiency.
+                            </p>
+                        </div>
+
+                        <h4>Gradient Boosting Classifier</h4>
+                        <div class="section-block">
+                            <p>
+                                The Gradient Boosting classifier builds decision trees
+                                sequentially, allowing each tree to improve upon the previous
+                                model’s mistakes.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Learning Rate</p>
+                        <div class="section-block">
+                            <p>
+                                The learning rate controls how quickly the model adapts to errors,
+                                requiring careful tuning to balance stability and performance.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Max Depth</p>
+                        <div class="section-block">
+                            <p>
+                                Max depth determines tree complexity, where deeper trees capture
+                                more detail but risk overfitting, while shallow trees may miss
+                                important patterns.
+                            </p>
+                        </div>
+
+                        <h4>Grid Search</h4>
+                        <div class="section-block">
+                            <p>
+                                Grid search evaluates multiple parameter combinations using
+                                cross-validation to select the model with the best F1 score and
+                                avoid biased results.
+                            </p>
+                        </div>
+
+                        <h4>Model Evaluation Metrics</h4>
+
+                        <p class="section-label">Accuracy</p>
+                        <div class="section-block">
+                            <p>
+                                Accuracy measures overall correctness but can be misleading when
+                                dealing with imbalanced phishing datasets.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Recall</p>
+                        <div class="section-block">
+                            <p>
+                                Recall measures how many phishing websites are successfully
+                                detected, making it a critical metric for user safety.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Precision</p>
+                        <div class="section-block">
+                            <p>
+                                Precision evaluates the trustworthiness of phishing predictions
+                                by measuring how many flagged sites are actually malicious.
+                            </p>
+                        </div>
+
+                        <p class="section-label">F1 Score</p>
+                        <div class="section-block">
+                            <p>
+                                The F1 score balances precision and recall and performs well on
+                                imbalanced datasets.
+                            </p>
+                        </div>
+
+                        <h4>Storing the Model</h4>
+                        <div class="section-block">
+                            <p>
+                                The trained model is stored using Pickle, allowing reuse without
+                                retraining and saving computational resources.
+                            </p>
+                        </div>
+
+                        <h4>Final Prediction Test</h4>
+                        <div class="section-block">
+                            <p>
+                                A sample phishing URL is tested to verify end-to-end functionality,
+                                where predictions classify URLs as safe or phishing.
+                            </p>
+                        </div>
+
+                        <h4>Conclusion</h4>
+                        <div class="section-block">
+                            <p>
+                                This project demonstrates how machine learning can effectively
+                                detect phishing websites, with Gradient Boosting providing strong
+                                performance and scope for future real-time enhancements.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!------------------------------------------------------------ FILE 2 ------------------------------------------------------------>
+            <!-- <div class="accordion-item">
+                <button class="accordion-header">
+                    feature.py
+                    <span>+</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="section-block">
+                        <p>
+                            This file extracts URL and webpage features by analyzing structure,
+                            symbols, redirects, subdomains, HTML content, and external resources,
+                            returning values compatible with the trained model.
+                        </p>
+                    </div>
+                </div>
+            </div> -->
+            <!-- FILE 2 -->
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    Feature Extraction File
+                    <span>+</span>
+                </button>
+
+                <div class="accordion-content">
+                    <div>
+
+                        <h3>Feature Extraction Module (feature.py)</h3>
+
+                        <p>
+                            This module converts a website URL into numerical features.
+                            Machine learning models cannot understand text directly.
+                            They require structured numeric input.
+                        </p>
+
+                        <p>
+                            This file analyzes the URL structure and webpage behavior.
+                            It then generates security-based features for prediction.
+                        </p>
+
+                        <h4>Libraries Used and Why They Are Required</h4>
+
+                        <p class="section-label">ipaddress</p>
+                        <div class="section-block">
+                            <p>
+                                Used to check whether the website uses a raw IP address.
+                                Phishing sites often hide behind IP addresses instead of domains.
+                            </p>
+                        </div>
+
+                        <p class="section-label">re (Regular Expressions)</p>
+                        <div class="section-block">
+                            <p>
+                                Used to detect suspicious patterns in URLs.
+                                It helps identify symbols, shortened links,
+                                hidden email forms, and other phishing tricks.
+                            </p>
+                        </div>
+
+                        <p class="section-label">socket</p>
+                        <div class="section-block">
+                            <p>
+                                Used to obtain the actual IP address of a domain.
+                                This helps verify whether the domain is linked to suspicious servers.
+                            </p>
+                        </div>
+
+                        <p class="section-label">requests</p>
+                        <div class="section-block">
+                            <p>
+                                Used to fetch webpage content.
+                                Without downloading the page, HTML-based security checks are not possible.
+                            </p>
+                        </div>
+
+                        <p class="section-label">BeautifulSoup</p>
+                        <div class="section-block">
+                            <p>
+                                Used to parse HTML content.
+                                It allows inspection of forms, links, scripts,
+                                images, and embedded elements.
+                            </p>
+                        </div>
+
+                        <p class="section-label">urlparse</p>
+                        <div class="section-block">
+                            <p>
+                                Used to break the URL into components such as
+                                domain name and protocol.
+                                This helps analyze structure and detect anomalies.
+                            </p>
+                        </div>
+
+                        <h4>How the Feature Extraction Works</h4>
+
+                        <div class="section-block">
+                            <p>
+                                When a user submits a URL, the system first analyzes
+                                its structure. It checks domain patterns,
+                                protocol type, length, and suspicious symbols.
+                            </p>
+
+                            <p>
+                                It then inspects the webpage content for risky behavior.
+                                This includes external resource loading,
+                                suspicious form actions, popups, redirects, and iframe usage.
+                            </p>
+
+                            <p>
+                                Each security check produces a numerical value.
+                                These values collectively form the feature vector.
+                            </p>
+                        </div>
+
+                        <h4>Why This Module Is Important</h4>
+
+                        <div class="section-block">
+                            <p>
+                                The machine learning model cannot evaluate raw URLs.
+                                It depends entirely on structured features.
+                            </p>
+
+                            <p>
+                                This module acts as the intelligence bridge
+                                between user input and model prediction.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!------------------------------------------------------------ FILE 3 ------------------------------------------------------------>
+            <!-- <div class="accordion-item">
+                <button class="accordion-header">
+                    app.py
+                    <span>+</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="section-block">
+                        <p>
+                            This file runs the Flask web application, processes user-submitted
+                            URLs, extracts features in real time, applies the trained model, and
+                            displays prediction results without storing user data.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div> -->
+            <!-- FILE 3 -->
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    Application File
+                    <span>+</span>
+                </button>
+
+                <div class="accordion-content">
+                    <div>
+
+                        <h3>Application Controller – app.py</h3>
+
+                        <p>
+                            This file runs the full web system.
+                            It connects the website interface with the machine learning model.
+                        </p>
+
+                        <p>
+                            It takes a URL from the user,
+                            sends it to the model,
+                            and shows the final result.
+                        </p>
+
+                        <h4>Libraries Used and Why They Are Needed</h4>
+
+                        <p class="section-label">Flask</p>
+                        <div class="section-block">
+                            <p>
+                                Flask creates the web application.
+                                It handles user requests and page responses.
+                            </p>
+
+                            <p>
+                                When a user clicks “Scan URL”,
+                                Flask receives that request.
+                            </p>
+                        </div>
+
+                        <p class="section-label">NumPy</p>
+                        <div class="section-block">
+                            <p>
+                                NumPy converts extracted features into arrays.
+                                The machine learning model only accepts numeric arrays.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Pickle</p>
+                        <div class="section-block">
+                            <p>
+                                Pickle loads the trained model from a saved file.
+                                This avoids training the model every time the app runs.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Warnings</p>
+                        <div class="section-block">
+                            <p>
+                                Warning messages are hidden.
+                                This keeps the server output clean.
+                            </p>
+                        </div>
+
+                        <p class="section-label">FeatureExtraction</p>
+                        <div class="section-block">
+                            <p>
+                                This module analyzes the URL.
+                                It converts the website into 30 numeric features.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Convert Module</p>
+                        <div class="section-block">
+                            <p>
+                                This module converts model output
+                                into readable messages like “Safe” or “Phishing”.
+                            </p>
+                        </div>
+
+                        <p class="section-label">Session</p>
+                        <div class="section-block">
+                            <p>
+                                Session temporarily stores the scan result.
+                                It prevents duplicate submissions on refresh.
+                            </p>
+                        </div>
+
+                        <h4>How the System Works Step by Step</h4>
+
+                        <div class="section-block">
+                            <p>
+                                Step 1: The user enters a URL.
+                            </p>
+
+                            <p>
+                                Step 2: The scan route receives the URL.
+                            </p>
+
+                            <p>
+                                Step 3: FeatureExtraction generates 30 features.
+                            </p>
+
+                            <p>
+                                Step 4: The trained model predicts the result.
+                            </p>
+
+                            <p>
+                                Step 5: The result is converted into readable form.
+                            </p>
+
+                            <p>
+                                Step 6: The result is shown on the main page.
+                            </p>
+                        </div>
+
+                        <h4>Why This File Is Important</h4>
+
+                        <div class="section-block">
+                            <p>
+                                This file connects everything together.
+                            </p>
+
+                            <p>
+                                Without it, the model cannot talk to users.
+                            </p>
+
+                            <p>
+                                It controls the full prediction flow.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <a href="/" class="back-link">← Back to Home</a>
+
+        </div>
+
+        <script>
+            const items = document.querySelectorAll(".accordion-item");
+
+            items.forEach(item => {
+                const header = item.querySelector(".accordion-header");
+                header.addEventListener("click", () => {
+                    items.forEach(i => i !== item && i.classList.remove("active"));
+                    item.classList.toggle("active");
+                });
+            });
+
+            document.addEventListener("keydown", e => {
+                if (e.key === "Escape") {
+                    items.forEach(item => item.classList.remove("active"));
+                }
+            });
+        </script>
+
+</body>
+
+</html>

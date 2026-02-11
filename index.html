@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>PHISHSHIELD – Fake Website Detection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #070b14;
+      --bg-card: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.08);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #22d3ee;
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, rgba(34, 211, 238, 0.08), transparent 60%), var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    #page-content {
+      transition: filter 0.3s ease;
+    }
+
+    #page-content.blurred {
+      filter: blur(20px);
+      pointer-events: none;
+    }
+
+    /* ---------- NAV ---------- */
+    header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      background: rgba(7, 11, 20, 0.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 600;
+      letter-spacing: .5px;
+      color: var(--accent);
+      display: flex;
+      gap: .5rem;
+      align-items: center;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 400;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      min-height: 100vh;
+      padding-top: 120px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .hero p {
+      margin-top: 1.5rem;
+      max-width: 700px;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    /* ---------- SCANNER ---------- */
+    .scanner-box {
+      margin-top: 3rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      padding: 2rem;
+      border-radius: 100px;
+      width: 60%;
+      max-width: 900px;
+    }
+
+    form {
+      display: flex;
+      gap: 1rem;
+    }
+
+    input[type="url"] {
+      flex: 1;
+      padding: 1rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.4);
+      color: white;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="url"]:focus {
+      border-color: var(--accent);
+    }
+
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 1rem 2.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+      color: #020617;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(34, 211, 238, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .scan-features {
+      margin-top: 1.4rem;
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      flex-wrap: wrap;
+    }
+
+    .scan-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+
+    /* ---------- MODAL ---------- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(20px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      width: 350px;
+      border-radius: 18px;
+
+      text-align: center;
+      position: relative;
+      transform: scale(0.7);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+
+    .modal-overlay.show .modal-card {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .symbol-icon-container {
+      margin: 0 auto 2.8rem;
+      /* was 1.5rem */
+    }
+
+    .modal-card h3 {
+      margin-bottom: 1.2rem;
+      /* was 0.8rem */
+    }
+
+    .modal-description {
+      margin-bottom: 1.8rem;
+      /* was 1.2rem */
+    }
+
+    .modal-btn {
+      margin-top: 1.2rem;
+    }
+
+
+    /* ---------- SYMBOL ICON (INFINITE POPUP) ---------- */
+    .symbol-icon-container {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Background glow that pulses */
+    .symbol-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      filter: blur(40px);
+      animation: glowPulse 1s ease-in-out infinite;
+    }
+
+    .symbol-safe .symbol-glow {
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.6), rgba(34, 211, 238, 0.4), transparent 70%);
+    }
+
+    .symbol-danger .symbol-glow {
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.7), rgba(255, 87, 34, 0.5), transparent 70%);
+    }
+
+    @keyframes glowPulse {
+
+      0%,
+      100% {
+        opacity: 0.5;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.15);
+      }
+    }
+
+    /* Symbol that pops infinitely */
+    .symbol-popup {
+      position: absolute;
+      font-size: 4rem;
+      font-weight: bold;
+      z-index: 11;
+
+    }
+
+    .symbol-safe .symbol-popup {
+      color: #22ff88;
+      text-shadow:
+        0 0 30px rgba(34, 211, 238, 1),
+        0 0 60px rgba(16, 185, 129, 0.8);
+
+
+    }
+
+    .symbol-danger .symbol-popup {
+      color: #ff5555;
+      text-shadow:
+        0 0 30px rgba(239, 68, 68, 1),
+        0 0 60px rgba(255, 87, 34, 0.8);
+
+    }
+
+
+
+
+    .modal-card h3 {
+      margin-bottom: 0.8rem;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    .modal-safe h3 {
+      color: #22ff88;
+      text-shadow: 0 0 30px rgba(34, 211, 238, 0.5);
+    }
+
+    .modal-danger h3 {
+      color: #ff5555;
+      text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+    }
+
+    .modal-description {
+      color: rgb(200 200 200);
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .url-box {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.85rem;
+      margin-bottom: 1.8rem;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-btn {
+      padding: 0.8rem 2.5rem;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    .modal-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .modal-btn:active {
+      transform: translateY(0);
+    }
+
+    .safe-btn {
+      background: rgba(16, 185, 129, 0.9);
+      color: white;
+    }
+
+    .safe-btn:hover {
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+      background: rgba(16, 185, 129, 1);
+    }
+
+    .danger-btn {
+      background: rgba(239, 68, 68, 0.9);
+      color: white;
+    }
+
+    .danger-btn:hover {
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 1);
+    }
+
+    /* .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+      padding: 0;
+      line-height: 1;
+      z-index: 2;
+    }
+
+    .close-btn:hover {
+      opacity: 0.7;
+    } */
+
+    /* ---------- ABOUT ---------- */
+    .about {
+      max-width: 1200px;
+      margin: auto;
+      padding: 6rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .about h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      line-height: 1.2;
+    }
+
+    .about h2 span {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .about p {
+      margin-top: 1rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .about-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      border-radius: 18px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 2rem;
+    }
+
+    .stat strong {
+      font-size: 1.8rem;
+      color: var(--accent);
+    }
+
+    .know-more-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: transform 0.2s ease;
+    }
+
+    .know-more-link:hover {
+      text-decoration: underline;
+      transform: translateX(4px);
+    }
+
+    /* ---------- DEVELOPERS ---------- */
+    .dev-section {
+      margin-top: 2rem;
+    }
+
+    .dev-section h4 {
+      margin-bottom: 1rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .dev-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .dev-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      padding: 1.2rem;
+      border-radius: 14px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    .dev-card strong {
+      display: block;
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+
+    .dev-card span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .dev-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow: 0 10px 30px rgba(34, 211, 238, 0.15);
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    /* ---------- WATER RIPPLE LOADER ---------- */
+    #loader-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      overflow: hidden;
+    }
+
+    .loader-background {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(34, 211, 238, 0.15), transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(14, 165, 233, 0.15), transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.1), transparent 60%),
+        var(--bg-dark);
+      backdrop-filter: blur(40px);
+      animation: wavyBackground 8s ease-in-out infinite;
+    }
+
+    @keyframes wavyBackground {
+
+      0%,
+      100% {
+        filter: blur(20px) hue-rotate(0deg);
+        transform: scale(1);
+      }
+
+      25% {
+        filter: blur(25px) hue-rotate(5deg);
+        transform: scale(1.05);
+      }
+
+      50% {
+        filter: blur(30px) hue-rotate(-5deg);
+        transform: scale(1.02);
+      }
+
+      75% {
+        filter: blur(25px) hue-rotate(3deg);
+        transform: scale(1.05);
+      }
+    }
+
+    .water-ripple-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ripple-center {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.8), rgba(34, 211, 238, 0.3));
+      border-radius: 50%;
+      box-shadow: 0 0 30px rgba(34, 211, 238, 0.8);
+      animation: centerPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes centerPulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+
+      50% {
+        transform: scale(1.3);
+        opacity: 1;
+      }
+    }
+
+    .water-ripple {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(34, 211, 238, 0.6);
+      box-shadow:
+        0 0 20px rgba(34, 211, 238, 0.4),
+        inset 0 0 20px rgba(34, 211, 238, 0.2);
+      animation: waterRipple 3s ease-out infinite;
+    }
+
+    .water-ripple:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    .water-ripple:nth-child(3) {
+      animation-delay: 1s;
+    }
+
+    .water-ripple:nth-child(4) {
+      animation-delay: 1.5s;
+    }
+
+    .water-ripple:nth-child(5) {
+      animation-delay: 2s;
+    }
+
+    .water-ripple:nth-child(6) {
+      animation-delay: 2.5s;
+    }
+
+    @keyframes waterRipple {
+      0% {
+        width: 0;
+        height: 0;
+        opacity: 0.8;
+        border-width: 3px;
+      }
+
+      50% {
+        opacity: 0.4;
+        border-width: 2px;
+      }
+
+      100% {
+        width: 800px;
+        height: 800px;
+        opacity: 0;
+        border-width: 1px;
+      }
+    }
+
+    .loading-text {
+      position: absolute;
+      bottom: 20%;
+      color: var(--accent);
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      animation: textFade 2s ease-in-out infinite;
+    }
+
+    @keyframes textFade {
+
+      0%,
+      100% {
+        opacity: 0.4;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 900px) {
+      .about {
+        grid-template-columns: 1fr;
+      }
+
+      form {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+
+      .scanner-box {
+        width: 90%;
+      }
+
+      .modal-card {
+        width: 90%;
+        max-width: 360px;
+      }
+
+      @keyframes waterRipple {
+        0% {
+          width: 0;
+          height: 0;
+          opacity: 0.8;
+          border-width: 3px;
+        }
+
+        50% {
+          opacity: 0.4;
+          border-width: 2px;
+        }
+
+        100% {
+          width: 500px;
+          height: 500px;
+          opacity: 0;
+          border-width: 1px;
+        }
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Water Ripple Loader Overlay -->
+  <div id="loader-overlay">
+    <div class="loader-background"></div>
+    <div class="water-ripple-container">
+      <div class="ripple-center"></div>
+      <div class="water-ripple"></div>
+      <div class="water-ripple"></div>
+      <div class="water-ripple"></div>
+      <div class="water-ripple"></div>
+      <div class="water-ripple"></div>
+      <div class="water-ripple"></div>
+    </div>
+    <div class="loading-text">SCANNING...</div>
+  </div>
+
+  <!-- Page Content -->
+  <div id="page-content">
+    <!-- Header -->
+    <header>
+      <nav>
+        <div class="logo">🛡 PHISHSHIELD</div>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Fake Website <span>Detection</span></h1>
+      <p>
+        Powered by machine learning to instantly identify phishing URLs. Protect yourself from fake websites with high
+        detection accuracy.
+      </p>
+
+      <div class="scanner-box">
+        <form action="/scan" method="POST" onsubmit="showLoader()">
+          <input type="url" name="name" placeholder="https://example.com" required>
+          <button type="submit">Scan URL</button>
+        </form>
+      </div>
+
+      <div class="scan-features">
+        <div class="scan-item">✔ High Detection Accuracy</div>
+        <div class="scan-item">⚡ Instant Results</div>
+        <div class="scan-item">🔒 Privacy Protected</div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+      <div>
+        <h2>Intelligent <span>Protection</span><br>Against Phishing.</h2>
+        <p>
+          PHISHSHIELD is a machine-learning based phishing detection system that analyzes URL structure, domain
+          behavior, and security features to identify fake websites before users interact with them.
+        </p>
+        <a href="/know-more" class="know-more-link">Know more →</a>
+      </div>
+
+      <div class="about-card">
+        <p>
+          Developed as a <strong>final-year academic project</strong> at <strong>MLV Textile & Engineering
+            College</strong>.
+        </p>
+        <div class="stats">
+          <div class="stat">
+            <strong>95%</strong><br>Accuracy
+          </div>
+        </div>
+
+        <div class="dev-section">
+          <h4>Project Developers</h4>
+          <div class="dev-grid">
+            <div class="dev-card">
+              <strong>Suraj Joshi</strong>
+              <span>Final Year Student</span>
+            </div>
+            <div class="dev-card">
+              <strong>Yash Jain</strong>
+              <span>Final Year Student</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      © 2026 PHISHSHIELD
+    </footer>
+  </div>
+
+  <!-- Result Modal -->
+
+  {% if name %}
+  <div id="result-modal" class="modal-overlay show">
+    <div class="modal-card {{ 'modal-safe' if name.safe else 'modal-danger' }}">
+
+
+      {% if name.safe %}
+      <!-- Safe Symbol - Infinite Popup -->
+      <div class="symbol-icon-container symbol-safe">
+        <div class="symbol-glow"></div>
+        <div class="symbol-popup">✓</div>
+      </div>
+
+      <h3>Website is Safe</h3>
+      <p class="modal-description">Our analysis indicates this website is legitimate.</p>
+      <p id="url-display" class="url-box">{{ name.url }}</p>
+
+      <button class="modal-btn safe-btn" onclick="window.open('{{ name.url }}')">
+        Continue to Site
+      </button>
+      {% else %}
+      <!-- Danger Symbol - Infinite Popup -->
+      <div class="symbol-icon-container symbol-danger">
+        <div class="symbol-glow"></div>
+        <div class="symbol-popup">!</div>
+      </div>
+
+      <h3>Phishing Detected</h3>
+      <p class="modal-description">Our analysis indicates this website is Phishing.</p>
+      <p id="url-display" class="url-box">{{ name.url }}</p>
+
+      <button class="modal-btn danger-btn" onclick="window.open('{{ name.url }}')">
+        Still Wants to Continue
+      </button>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- JavaScript -->
+  <script>
+    function showLoader() {
+      document.getElementById("loader-overlay").style.display = "flex";
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("result-modal");
+      const pageContent = document.getElementById("page-content");
+
+      if (modal) {
+        modal.classList.remove("show");
+        pageContent.classList.remove("blurred");
+        setTimeout(() => modal.style.display = "none", 300);
+      }
+    }
+
+    function shortenUrlDisplay() {
+      const urlDisplay = document.getElementById("url-display");
+      if (!urlDisplay) return;
+
+      const fullUrl = urlDisplay.textContent.trim();
+      try {
+        const url = new URL(fullUrl);
+        let shortUrl = url.hostname + url.pathname + url.search;
+        urlDisplay.textContent = shortUrl.length > 50 ? shortUrl.substring(0, 47) + '...' : shortUrl;
+      } catch (e) {
+        if (fullUrl.length > 50) {
+          urlDisplay.textContent = fullUrl.substring(0, 47) + '...';
+        }
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", function () {
+      const modal = document.getElementById("result-modal");
+      if (modal && modal.classList.contains("show")) {
+        document.getElementById("page-content").classList.add("blurred");
+        shortenUrlDisplay();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closeModal();
+    });
+
+    document.addEventListener("click", function (event) {
+      const modal = document.getElementById("result-modal");
+      const modalCard = document.querySelector(".modal-card");
+
+      if (modal && modal.classList.contains("show") && !modalCard.contains(event.target)) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+
+</html>
